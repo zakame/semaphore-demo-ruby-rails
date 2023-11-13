@@ -2,8 +2,21 @@ version: v1.0
 name: Demo Rails 6 app
 agent:
   machine:
-    type: e1-standard-2
-    os_image: ubuntu2004
+    type: s1-supernode-1
+    os_image: ''
+  containers:
+    - name: main
+      image: 'semaphoreci/ruby:2.7-node'
+      env_vars:
+        - name: RAILS_ENV
+          value: test
+        - name: DATABASE_URL
+          value: postgresql://postgres:test@db/demo-rails5_test
+    - name: db
+      image: 'semaphoreci/postgres:9.6'
+      env_vars:
+        - name: POSTGRES_PASSWORD
+          value: test
 blocks:
   - name: Setup
     dependencies: []
@@ -11,8 +24,6 @@ blocks:
       jobs:
         - name: bundle
           commands:
-            - sem-version ruby 2.7.3
-            - sem-version node 14.16.1
             - checkout
             - cache restore
             - bundle install
@@ -24,8 +35,6 @@ blocks:
       jobs:
         - name: check style + security
           commands:
-            - sem-version ruby 2.7.3
-            - sem-version node 14.16.1
             - checkout
             - cache restore
             - bundle install
@@ -38,13 +47,10 @@ blocks:
     task:
       prologue:
         commands:
-          - sem-version ruby 2.7.3
-          - sem-version node 14.16.1
           - checkout
           - cache restore
           - bundle install
           - cache store
-          - sem-service start postgres
           - 'bundle exec rake db:setup'
       jobs:
         - name: RSpec - model tests
@@ -63,8 +69,6 @@ blocks:
     task:
       prologue:
         commands:
-          - sem-version ruby 2.7.3
-          - sem-version node 14.16.1
           - checkout
           - cache restore
           - bundle install
@@ -72,7 +76,6 @@ blocks:
       jobs:
         - name: RSpec - feature specs
           commands:
-            - sem-service start postgres
             - 'bundle exec rake db:setup'
             - bundle exec rspec spec/features
       epilogue:
