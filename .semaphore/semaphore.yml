@@ -26,7 +26,7 @@ blocks:
           commands:
             - checkout
             - cache restore
-            - bundle install
+            - bundle install --path vendor/bundle
             - cache store
   - name: Code scanning
     dependencies:
@@ -37,7 +37,7 @@ blocks:
           commands:
             - checkout
             - cache restore
-            - bundle install
+            - bundle install --path vendor/bundle
             - cache store
             - bundle exec rubocop
             - bundle exec brakeman
@@ -49,7 +49,7 @@ blocks:
         commands:
           - checkout
           - cache restore
-          - bundle install
+          - bundle install --path vendor/bundle
           - cache store
           - 'bundle exec rake db:setup'
       jobs:
@@ -71,7 +71,7 @@ blocks:
         commands:
           - checkout
           - cache restore
-          - bundle install
+          - bundle install --path vendor/bundle
           - cache store
       jobs:
         - name: RSpec - feature specs
