@@ -3,7 +3,6 @@ name: Demo Rails 6 app
 agent:
   machine:
     type: s1-supernode-1
-    os_image: ''
   containers:
     - name: main
       image: 'semaphoreci/ruby:2.7-node'
